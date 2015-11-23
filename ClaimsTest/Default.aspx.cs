@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace ClaimsTest
 {
@@ -13,21 +8,17 @@ namespace ClaimsTest
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            signedIn.InnerText = "You are not signed in.";
+            
             ClaimsPrincipal claimsPrincipal = Thread.CurrentPrincipal as ClaimsPrincipal;
-
             if (claimsPrincipal != null)
             {
-                signedIn.Text = "You are signed in as " + HttpContext.Current.User.Identity.Name;
-                phClaims.Controls.Add(new LiteralControl("<br />"));
+                string claims = string.Empty;
+                signedIn.InnerText = "Your user identity is " + User.Identity.Name;
                 foreach (Claim claim in claimsPrincipal.Claims)
-                {
-                    string l = string.Format("<ul><li>{0}  ==  {1}</li></ul>", claim.Type, claim.Value);
-                    phClaims.Controls.Add(new LiteralControl(l));
-                }
-            }
-            else
-            {
-                signedIn.Text = "You are not signed in.";
+                    claims += string.Format("<li>{0} <span class='claimValue'>{1}</span></li>", claim.Type, claim.Value);
+
+                claimsList.InnerHtml = claims;
             }
         }
     }
