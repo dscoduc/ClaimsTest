@@ -8,18 +8,11 @@ namespace ClaimsTest
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            signedIn.InnerText = "You are not signed in.";
-            
-            ClaimsPrincipal claimsPrincipal = Thread.CurrentPrincipal as ClaimsPrincipal;
+            ClaimsPrincipal claimsPrincipal = Page.User as ClaimsPrincipal;
             if (claimsPrincipal != null)
-            {
-                string claims = string.Empty;
-                signedIn.InnerText = "Your user identity is " + User.Identity.Name;
-                foreach (Claim claim in claimsPrincipal.Claims)
-                    claims += string.Format("<li>{0} <span class='claimValue'>{1}</span></li>", claim.Type, claim.Value);
-
-                claimsList.InnerHtml = claims;
-            }
+                signedIn.InnerText = "You've signed in as " + User.Identity.Name;
+            this.ClaimsGridView.DataSource = claimsPrincipal.Claims;
+            this.ClaimsGridView.DataBind();
         }
     }
 }
